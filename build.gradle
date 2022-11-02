@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation('net.portswigger.burp.extender:burp-extender-api:2.3')
+}
+
+
+
+task fatJar(type: Jar) {
+    baseName = "burp_json_xss_finder" + '-all'
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
