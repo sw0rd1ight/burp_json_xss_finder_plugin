@@ -6,6 +6,7 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class BurpExtender extends AbstractTableModel implements IBurpExtender, I
         // obtain an extension helpers object
         helpers = callbacks.getHelpers();
         stdout.println(System.getProperty("user.dir"));
+        stdout.println("Load Plugin Success");
 
 //        this.callbacks.restoreState(new File("xss.file"));
 
@@ -119,8 +121,15 @@ public class BurpExtender extends AbstractTableModel implements IBurpExtender, I
                 IRequestInfo requestInfo = helpers.analyzeRequest(messageInfo.getRequest());
 
                 String statedMimeType = responseInfo.getStatedMimeType();
-                String inferredMimeType = responseInfo.getInferredMimeType();
-                if(statedMimeType.equals("HTML")&&inferredMimeType.equals("JSON")){
+//                String inferredMimeType = responseInfo.getInferredMimeType(); burp has bug
+
+                int bodyOffset = responseInfo.getBodyOffset();
+                String resp =  new String(messageInfo.getResponse(), StandardCharsets.UTF_8);
+                String rBody = resp.substring(bodyOffset);
+
+
+
+                if(statedMimeType.equals("HTML")&&Utils.IsJSON(rBody)){
                     int row = log.size();
                     log.add(new LogEntry(requestInfo.getMethod(), callbacks.saveBuffersToTempFiles(messageInfo),
                             helpers.analyzeRequest(messageInfo).getUrl()));

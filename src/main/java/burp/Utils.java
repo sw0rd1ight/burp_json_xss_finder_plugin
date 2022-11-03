@@ -6,9 +6,6 @@ public class Utils {
         if (rBody.startsWith("{")&&rBody.endsWith("}")){
             return true;
         }
-        else if(rBody.startsWith("[")&&rBody.endsWith("]")){
-            return true;
-        }
-        return false;
+        else return rBody.startsWith("[") && rBody.endsWith("]");
     }
 }
